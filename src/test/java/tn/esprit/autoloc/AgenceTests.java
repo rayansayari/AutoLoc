@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.repository.IAgenceRepository;
+import org.springframework.stereotype.Repository;
+import tn.esprit.autoloc.service.IAgenceService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,11 @@ public class AgenceTests {
     // Question 2
     @Autowired
     private AgenceRepositoryMock basicAgenceRepository;
+
+
+    @Autowired
+    private IAgenceService agenceService;
+
 
     // Question 3
     @Autowired
@@ -78,6 +85,21 @@ public class AgenceTests {
     public void fullAddAgence() {
         addAgence(fullAgenceRepository);
     }
+
+    @Test
+    public void createAgence() {
+        Agence agence = new Agence();
+        agence.setNom("Agence Tunis Central");
+        agence.setAdresse("15 Avenue Habib Bourguiba");
+        agence.setTelephone("71100200");
+        agence.setVille("Tunis");
+
+        Agence created = agenceService.create(agence);
+
+        Assert.assertNotNull(created);
+        Assert.assertNotNull(created.getIdAgence());
+    }
+
 
     // Question 10 : Méthodes de chargement avec indication du dépôt utilisé
     @Test
@@ -153,5 +175,7 @@ public class AgenceTests {
     }
 }
 
+
+@Repository
 interface AgenceRepositoryMock extends CrudRepository<Agence, Long> {
 }
