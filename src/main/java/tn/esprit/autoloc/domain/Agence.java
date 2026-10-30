@@ -1,5 +1,6 @@
 package tn.esprit.autoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -18,10 +19,20 @@ public class Agence {
     private String telephone;
     private String ville;
 
-    @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("agence-vehicules") // Résolution boucle Agence ↔ Vehicule
     private List<Vehicule> vehicules;
 
-    // Question 16 : Agence ↔ Employe (LAZY, pas de cascade suppression)
     @OneToMany(mappedBy = "agence", fetch = FetchType.LAZY)
+    @JsonManagedReference("agence-employes") // Résolution boucle Agence ↔ Employe
     private List<Employe> employes;
+
+    // --- Alias de compatibilité ---
+    public Long getId() {
+        return idAgence;
+    }
+
+    public void setId(Long idAgence) {
+        this.idAgence = idAgence;
+    }
 }

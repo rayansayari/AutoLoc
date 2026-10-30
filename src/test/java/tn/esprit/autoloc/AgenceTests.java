@@ -1,8 +1,7 @@
 package tn.esprit.autoloc;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -10,18 +9,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.repository.IAgenceRepository;
-import org.springframework.stereotype.Repository;
 import tn.esprit.autoloc.service.IAgenceService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class AgenceTests {
 
@@ -29,10 +26,8 @@ public class AgenceTests {
     @Autowired
     private AgenceRepositoryMock basicAgenceRepository;
 
-
     @Autowired
     private IAgenceService agenceService;
-
 
     // Question 3
     @Autowired
@@ -96,10 +91,9 @@ public class AgenceTests {
 
         Agence created = agenceService.create(agence);
 
-        Assert.assertNotNull(created);
-        Assert.assertNotNull(created.getIdAgence());
+        Assertions.assertNotNull(created);
+        Assertions.assertNotNull(created.getIdAgence());
     }
-
 
     // Question 10 : Méthodes de chargement avec indication du dépôt utilisé
     @Test
@@ -132,7 +126,7 @@ public class AgenceTests {
             }
         }
 
-        Assert.fail(sb.toString());
+        Assertions.fail(sb.toString());
     }
 
     // Questions 11, 12, 13, 14 : Chargement trié par ID décroissant
@@ -148,13 +142,12 @@ public class AgenceTests {
                     .append(agence.getVille()).append("\n");
         }
 
-        Assert.fail(sb.toString());
+        Assertions.fail(sb.toString());
     }
 
     // Questions 15, 16, 17, 18 : Chargement paginé (taille = 2) et trié
     @Test
     public void loadPagedAgences() {
-        // Page 0 (1ère page), taille de 2, tri par idAgence décroissant
         Pageable pageable = PageRequest.of(0, 2, Sort.by("idAgence").descending());
         Page<Agence> page = fullAgenceRepository.findAll(pageable);
 
@@ -171,10 +164,9 @@ public class AgenceTests {
                     .append(agence.getVille()).append("\n");
         }
 
-        Assert.fail(sb.toString());
+        Assertions.fail(sb.toString());
     }
 }
-
 
 @Repository
 interface AgenceRepositoryMock extends CrudRepository<Agence, Long> {

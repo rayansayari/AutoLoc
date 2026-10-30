@@ -1,12 +1,19 @@
 package tn.esprit.autoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
 @Entity
 @Table(name = "vehicule")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Vehicule {
 
     @Id
@@ -23,17 +30,18 @@ public class Vehicule {
     private Double tarifJournalier;
 
     @ManyToOne
+    @JsonBackReference("agence-vehicules")
     private Agence agence;
 
-    // Question 16 : Relation Vehicule <-> Reservation
     @OneToMany(mappedBy = "vehicule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Reservation> reservations;
 
-    // Question 19 : Relation Vehicule <-> Maintenance
     @OneToMany(mappedBy = "vehicule")
+    @JsonIgnore
     private List<Maintenance> maintenances;
 
-    // Question 21 : Relation ManyToMany avec Equipement (L'ATTRIBUT MANQUANT ÉTAIT ICI)
     @ManyToMany
+    @JsonIgnore
     private List<Equipement> equipements;
 }
