@@ -1,20 +1,26 @@
 package tn.esprit.autoloc.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
+import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IAgenceRepository;
 
 @Service
 @Primary
-@RequiredArgsConstructor
 public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long> implements IAgenceService {
 
     private final IAgenceRepository agenceRepository;
+    private final IVehiculeService vehiculeService;
+
+    public AgenceServiceImpl(IAgenceRepository agenceRepository, IVehiculeService vehiculeService) {
+        this.agenceRepository = agenceRepository;
+        this.vehiculeService = vehiculeService;
+    }
 
     @Override
     protected JpaRepository<Agence, Long> getRepository() {
@@ -97,5 +103,20 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long> implemen
     public boolean hasVehicules(Long id) {
         Agence agence = findById(id);
         return agence != null && agence.getVehicules() != null && !agence.getVehicules().isEmpty();
+    }
+
+    @Override
+    public String simuler(Agence agence, int nbJours, VehiculeOffre offre) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Id : " + agence.getIdAgence() + ", Nom : " + agence.getNom()
+                + ", Tel : " + agence.getTelephone() + "\n");
+
+        double total = 0;
+        for (Vehicule vehicule : agence.getVehicules()) {
+            total += vehiculeService.calculTarif(vehicule, nbJours, offre);
+        }
+
+        stringBuilder.append("Total : " + total + "\n");
+        return stringBuilder.toString();
     }
 }

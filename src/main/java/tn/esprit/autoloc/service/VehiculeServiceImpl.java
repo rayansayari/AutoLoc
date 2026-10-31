@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.Utils;
+import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.repository.IVehiculeRepository;
 
@@ -47,4 +48,24 @@ public class VehiculeServiceImpl extends GenericServiceImpl<Vehicule, Long> impl
         if (entity.getTarifJournalier() == null || entity.getTarifJournalier() <= 0) return false;
         return true;
     }
-}
+
+    @Override
+    public double calculTarif(Vehicule vehicule, int nbJours, VehiculeOffre offre) {
+        var tarifJournalier = vehicule.getTarifJournalier().doubleValue();
+
+        if (offre == VehiculeOffre.WEEKEND) {
+            tarifJournalier *= 0.8;
+        }
+        if (offre == VehiculeOffre.LONGUE_DUREE) {
+            tarifJournalier *= 0.75;
+        }
+
+        var total = tarifJournalier * nbJours;
+
+        if (offre == VehiculeOffre.LONGUE_DUREE && total > 2000) {
+            total *= 0.95;
+        }
+
+        return total;
+    }
+    }

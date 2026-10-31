@@ -3,6 +3,7 @@ package tn.esprit.autoloc.web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.service.IAgenceService;
 
@@ -45,5 +46,14 @@ public class AgenceController {
     @ResponseStatus(HttpStatus.NO_CONTENT) // Retourne le code HTTP 204 NO CONTENT
     public void deleteById(@PathVariable Long id) {
         agenceService.deleteById(id);
+    }
+
+    // Étape 10 : SIMULATION (GET /api/agences/{id}/simuler?jours=40&offre=LONGUE_DUREE)
+    @GetMapping(value = "/{id}/simuler", produces = "text/plain;charset=UTF-8")
+    public String simuler(@PathVariable Long id,
+                          @RequestParam int jours,
+                          @RequestParam VehiculeOffre offre) {
+        Agence agence = agenceService.findById(id);
+        return agenceService.simuler(agence, jours, offre);
     }
 }
