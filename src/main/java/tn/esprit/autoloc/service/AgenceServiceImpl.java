@@ -8,14 +8,20 @@ import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
+import tn.esprit.autoloc.io.AffichageConsole;
+import tn.esprit.autoloc.io.Rapport;
+import tn.esprit.autoloc.io.RapportFactory;
 import tn.esprit.autoloc.repository.IAgenceRepository;
 
 @Service
 @Primary
-public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long> implements IAgenceService {
+@AffichageConsole
+public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
+        implements IAgenceService, IAgenceSimulationService {
 
     private final IAgenceRepository agenceRepository;
     private final IVehiculeService vehiculeService;
+    private final Rapport rapport = RapportFactory.creer(AgenceServiceImpl.class);
 
     public AgenceServiceImpl(IAgenceRepository agenceRepository, IVehiculeService vehiculeService) {
         this.agenceRepository = agenceRepository;
@@ -107,16 +113,10 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long> implemen
 
     @Override
     public String simuler(Agence agence, int nbJours, VehiculeOffre offre) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Id : " + agence.getIdAgence() + ", Nom : " + agence.getNom()
-                + ", Tel : " + agence.getTelephone() + "\n");
-
         double total = 0;
         for (Vehicule vehicule : agence.getVehicules()) {
             total += vehiculeService.calculTarif(vehicule, nbJours, offre);
         }
-
-        stringBuilder.append("Total : " + total + "\n");
-        return stringBuilder.toString();
+        return rapport.generer(agence, total);
     }
 }

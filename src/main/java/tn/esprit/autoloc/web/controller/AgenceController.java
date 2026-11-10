@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.service.IAgenceService;
+import tn.esprit.autoloc.service.IAgenceSimulationService;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class AgenceController {
 
     private final IAgenceService agenceService; // Question 10
+    private final IAgenceSimulationService simulationService; // Étape 11
 
     // Question 11 : READ ALL (GET /api/agences)
     @GetMapping
@@ -54,6 +56,6 @@ public class AgenceController {
                           @RequestParam int jours,
                           @RequestParam VehiculeOffre offre) {
         Agence agence = agenceService.findById(id);
-        return agenceService.simuler(agence, jours, offre);
+        return simulationService.simuler(agence, jours, offre);
     }
 }

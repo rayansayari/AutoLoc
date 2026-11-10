@@ -3,7 +3,6 @@ package tn.esprit.autoloc.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.Utils;
-import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IAgenceRepository;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class BasicAgenceServiceImpl implements IAgenceService {
+public class BasicAgenceServiceImpl implements IGenericService<Agence, Long> {
 
     private final IAgenceRepository agenceRepository;
 
@@ -69,14 +68,9 @@ public class BasicAgenceServiceImpl implements IAgenceService {
         agenceRepository.deleteById(id);
     }
 
-    @Override
+    // Plus de @Override : hasVehicules appartient à IAgenceService, que cette classe n'implémente plus
     public boolean hasVehicules(Long id) {
         Agence agence = findById(id);
         return agence.getVehicules() != null && !agence.getVehicules().isEmpty();
-    }
-
-    @Override
-    public String simuler(Agence agence, int nbJours, VehiculeOffre offre) {
-        throw new UnsupportedOperationException("Simulation non supportée par l'implémentation basique.");
     }
 }

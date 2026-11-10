@@ -4,15 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.Utils;
+import tn.esprit.autoloc.calcul.OffreStrategy;
 import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.repository.IVehiculeRepository;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class VehiculeServiceImpl extends GenericServiceImpl<Vehicule, Long> implements IVehiculeService {
 
     private final IVehiculeRepository vehiculeRepository;
+    private final Map<String, OffreStrategy> strategies;   // Spring remplit cette Map
 
     @Override
     protected JpaRepository<Vehicule, Long> getRepository() {
@@ -51,21 +55,7 @@ public class VehiculeServiceImpl extends GenericServiceImpl<Vehicule, Long> impl
 
     @Override
     public double calculTarif(Vehicule vehicule, int nbJours, VehiculeOffre offre) {
-        var tarifJournalier = vehicule.getTarifJournalier().doubleValue();
-
-        if (offre == VehiculeOffre.WEEKEND) {
-            tarifJournalier *= 0.8;
-        }
-        if (offre == VehiculeOffre.LONGUE_DUREE) {
-            tarifJournalier *= 0.75;
-        }
-
-        var total = tarifJournalier * nbJours;
-
-        if (offre == VehiculeOffre.LONGUE_DUREE && total > 2000) {
-            total *= 0.95;
-        }
-
-        return total;
+        OffreStrategy strategy = strategies.get(offre.name());
+        return strategy.calculer(vehicule.getTarifJournalier(), nbJours);
     }
-    }
+}
