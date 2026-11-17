@@ -6,12 +6,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
+import tn.esprit.autoloc.domain.Employe;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.io.AffichageConsole;
 import tn.esprit.autoloc.io.Rapport;
 import tn.esprit.autoloc.io.RapportFactory;
 import tn.esprit.autoloc.repository.IAgenceRepository;
+
+import java.util.List;
 
 @Service
 @Primary
@@ -21,11 +24,15 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
 
     private final IAgenceRepository agenceRepository;
     private final IVehiculeService vehiculeService;
+    private final IEmployeService employeService;
     private final Rapport rapport = RapportFactory.creer(AgenceServiceImpl.class);
 
-    public AgenceServiceImpl(IAgenceRepository agenceRepository, IVehiculeService vehiculeService) {
+    public AgenceServiceImpl(IAgenceRepository agenceRepository,
+                             IVehiculeService vehiculeService,
+                             IEmployeService employeService) {
         this.agenceRepository = agenceRepository;
         this.vehiculeService = vehiculeService;
+        this.employeService = employeService;
     }
 
     @Override
@@ -118,5 +125,23 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
             total += vehiculeService.calculTarif(vehicule, nbJours, offre);
         }
         return rapport.generer(agence, total);
+    }
+
+    @Override
+    @Transactional
+    public Agence ajouterEmployes(Long id, Agence agence) {
+        // 1. Mettre à jour d'abord l'agence
+        Agence existing = update(id, agence);
+
+        // 2. Utiliser le service des employés pour insérer les employés
+        List<Employe> nouveaux = agence.getEmployes() != null ? agence.getEmployes() : List.of();
+        for (Employe employe : nouveaux) {
+            existing.addEmploye(employe);      // symétrie des deux côtés
+            employeService.create(employe);
+        }
+
+        // 3. Mettre à jour l'effectif avec la taille de la liste
+        existing.setEffectif(nouveaux.size());
+        return agenceRepository.save(existing);
     }
 }

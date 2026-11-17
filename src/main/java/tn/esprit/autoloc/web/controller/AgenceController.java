@@ -1,4 +1,4 @@
-package tn.esprit.autoloc.web;
+package tn.esprit.autoloc.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,52 +10,52 @@ import tn.esprit.autoloc.service.IAgenceSimulationService;
 
 import java.util.List;
 
-@RestController                           // Question 9
-@RequestMapping("/agences")               // Question 9
+@RestController
+@RequestMapping("/agences")
 @RequiredArgsConstructor
 public class AgenceController {
 
-    private final IAgenceService agenceService; // Question 10
-    private final IAgenceSimulationService simulationService; // Étape 11
+    private final IAgenceService agenceService;
+    private final IAgenceSimulationService simulationService;
 
-    // Question 11 : READ ALL (GET /api/agences)
     @GetMapping
     public List<Agence> findAll() {
         return agenceService.findAll();
     }
 
-    // Question 19 : READ BY ID (GET /api/agences/{id})
     @GetMapping("/{id}")
     public Agence findById(@PathVariable Long id) {
         return agenceService.findById(id);
     }
 
-    // Question 21 : CREATE (POST /api/agences)
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // Retourne le code HTTP 201 CREATED
+    @ResponseStatus(HttpStatus.CREATED)
     public Agence create(@RequestBody Agence agence) {
         return agenceService.create(agence);
     }
 
-    // Question 24 : UPDATE (PUT /api/agences/{id})
     @PutMapping("/{id}")
     public Agence update(@PathVariable Long id, @RequestBody Agence agence) {
         return agenceService.update(id, agence);
     }
 
-    // Question 25 : DELETE (DELETE /api/agences/{id})
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT) // Retourne le code HTTP 204 NO CONTENT
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         agenceService.deleteById(id);
     }
 
-    // Étape 10 : SIMULATION (GET /api/agences/{id}/simuler?jours=40&offre=LONGUE_DUREE)
     @GetMapping(value = "/{id}/simuler", produces = "text/plain;charset=UTF-8")
     public String simuler(@PathVariable Long id,
                           @RequestParam int jours,
                           @RequestParam VehiculeOffre offre) {
         Agence agence = agenceService.findById(id);
         return simulationService.simuler(agence, jours, offre);
+    }
+
+    // Étape 12 : mise à jour d'une agence avec ajout d'employés
+    @PutMapping("/{id}/employes")
+    public Agence ajouterEmployes(@PathVariable Long id, @RequestBody Agence agence) {
+        return agenceService.ajouterEmployes(id, agence);
     }
 }

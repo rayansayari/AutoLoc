@@ -42,6 +42,13 @@ public class Vehicule {
     private List<Maintenance> maintenances;
 
     @ManyToMany
-    @JsonIgnore
     private List<Equipement> equipements;
+
+    @PreRemove
+    private void verifierAvantSuppression() {
+        if (equipements != null && !equipements.isEmpty()) {
+            throw new IllegalStateException(
+                    "Suppression impossible : la véhicule " + idVehicule + " a encore des équipements affectés.");
+        }
+    }
 }
