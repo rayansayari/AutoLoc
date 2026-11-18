@@ -13,7 +13,6 @@ import tn.esprit.autoloc.io.AffichageConsole;
 import tn.esprit.autoloc.io.Rapport;
 import tn.esprit.autoloc.io.RapportFactory;
 import tn.esprit.autoloc.repository.IAgenceRepository;
-
 import java.util.List;
 
 @Service
@@ -21,6 +20,8 @@ import java.util.List;
 @AffichageConsole
 public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
         implements IAgenceService, IAgenceSimulationService {
+
+    private static final String ENTITY_NAME = "Agence";
 
     private final IAgenceRepository agenceRepository;
     private final IVehiculeService vehiculeService;
@@ -42,7 +43,7 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
 
     @Override
     protected String getEntityName() {
-        return "Agence";
+        return ENTITY_NAME;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
         }
 
         Agence existingAgence = agenceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence", String.valueOf(id)));
+                .orElseThrow(() -> new ResourceNotFoundException(ENTITY_NAME, String.valueOf(id)));
 
         existingAgence.setNom(agence.getNom());
         existingAgence.setAdresse(agence.getAdresse());
@@ -93,7 +94,7 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
     @Transactional
     public void deleteById(Long id) {
         Agence agence = agenceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence", String.valueOf(id)));
+                .orElseThrow(() -> new ResourceNotFoundException(ENTITY_NAME, String.valueOf(id)));
 
         // Grâce à la configuration SQL (ON DELETE SET NULL),
         // MySQL détache automatiquement les véhicules et employés liés lors de la suppression.
@@ -107,9 +108,8 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
         if (entity.getNom() == null || entity.getNom().trim().isEmpty()) return false;
         if (entity.getAdresse() == null || entity.getAdresse().trim().isEmpty()) return false;
         if (entity.getTelephone() == null || entity.getTelephone().trim().isEmpty()) return false;
-        if (entity.getVille() == null || entity.getVille().trim().isEmpty()) return false;
 
-        return true;
+        return entity.getVille() != null && !entity.getVille().trim().isEmpty();
     }
 
     @Override

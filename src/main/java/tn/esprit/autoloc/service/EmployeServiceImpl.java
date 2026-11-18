@@ -39,7 +39,6 @@ public class EmployeServiceImpl extends GenericServiceImpl<Employe, Long> implem
     public boolean check(Employe entity, boolean isNew) {
         if (entity == null) return false;
         if (Utils.isNotEmpty(entity.getNom())) return false;
-        if (Utils.isNotEmpty(entity.getPrenom())) return false;
-        return true;
+        return !Utils.isNotEmpty(entity.getPrenom());
     }
 }

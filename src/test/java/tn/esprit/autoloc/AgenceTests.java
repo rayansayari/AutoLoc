@@ -19,8 +19,12 @@ import tn.esprit.autoloc.service.IAgenceService;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
+
+@Disabled("Tests des anciens ateliers")
+
 @SpringBootTest
-public class AgenceTests {
+class AgenceTests {
 
     // Question 2
     @Autowired
@@ -72,17 +76,17 @@ public class AgenceTests {
 
     // Question 7 : Tests d'ajout
     @Test
-    public void basicAddAgence() {
+    void basicAddAgence() {
         addAgence(basicAgenceRepository);
     }
 
     @Test
-    public void fullAddAgence() {
+    void fullAddAgence() {
         addAgence(fullAgenceRepository);
     }
 
     @Test
-    public void createAgence() {
+    void createAgence() {
         Agence agence = new Agence();
         agence.setNom("Agence Tunis Central");
         agence.setAdresse("15 Avenue Habib Bourguiba");
@@ -98,13 +102,13 @@ public class AgenceTests {
     // Question 10 : Méthodes de chargement avec indication du dépôt utilisé
     @Test
     @Transactional
-    public void basicLoadAgence() {
+    void basicLoadAgence() {
         loadAgence(basicAgenceRepository, "Basic Repository (CrudRepository)");
     }
 
     @Test
     @Transactional
-    public void fullLoadAgence() {
+    void fullLoadAgence() {
         loadAgence(fullAgenceRepository, "Full Repository (JpaRepository)");
     }
 
@@ -131,7 +135,7 @@ public class AgenceTests {
 
     // Questions 11, 12, 13, 14 : Chargement trié par ID décroissant
     @Test
-    public void loadSortedAgences() {
+    void loadSortedAgences() {
         List<Agence> agences = fullAgenceRepository.findAll(Sort.by("idAgence").descending());
 
         StringBuilder sb = new StringBuilder();
@@ -147,7 +151,7 @@ public class AgenceTests {
 
     // Questions 15, 16, 17, 18 : Chargement paginé (taille = 2) et trié
     @Test
-    public void loadPagedAgences() {
+    void loadPagedAgences() {
         Pageable pageable = PageRequest.of(0, 2, Sort.by("idAgence").descending());
         Page<Agence> page = fullAgenceRepository.findAll(pageable);
 

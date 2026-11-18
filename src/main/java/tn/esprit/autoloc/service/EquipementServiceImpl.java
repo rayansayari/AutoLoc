@@ -37,7 +37,6 @@ public class EquipementServiceImpl extends GenericServiceImpl<Equipement, Long> 
     @Override
     public boolean check(Equipement entity, boolean isNew) {
         if (entity == null) return false;
-        if (Utils.isNotEmpty(entity.getNom())) return false;
-        return true;
+        return !Utils.isNotEmpty(entity.getNom());
     }
 }

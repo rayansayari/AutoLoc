@@ -58,13 +58,12 @@ public class VehiculeServiceImpl extends GenericServiceImpl<Vehicule, Long> impl
         if (entity == null) return false;
         if (Utils.isNotEmpty(entity.getImmatriculation())) return false;
         if (Utils.isNotEmpty(entity.getMarque())) return false;
-        if (entity.getTarifJournalier() == null || entity.getTarifJournalier() <= 0) return false;
-        return true;
+        return entity.getTarifJournalier() != null && entity.getTarifJournalier() > 0;
     }
 
     @Override
     public double calculTarif(Vehicule vehicule, int nbJours, VehiculeOffre offre) {
-        OffreStrategy strategy = strategies.get(offre.name());
+        OffreStrategy strategy = strategies.get(offre.getNomBean());
         return strategy.calculer(vehicule.getTarifJournalier(), nbJours);
     }
 

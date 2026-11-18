@@ -1,4 +1,4 @@
-package tn.esprit.autoloc.web;
+package tn.esprit.autoloc.web.dto;
 
 import java.time.LocalDateTime;
 

@@ -1,8 +1,8 @@
 // IWrite.java
 package tn.esprit.autoloc.service;
 
-public interface IWrite<T, ID> {
+public interface IWrite<T, K> {
     T create(T entity);
-    T update(ID id, T entity);
-    void deleteById(ID id);
+    T update(K id, T entity);
+    void deleteById(K id);
 }

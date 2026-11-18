@@ -41,6 +41,6 @@ public class ReservationServiceImpl extends GenericServiceImpl<Reservation, Long
         if (entity == null) return false;
         if (entity.getDateDebut() == null || entity.getDateFin() == null) return false;
         if (entity.getDateFin().isBefore(entity.getDateDebut())) return false;
-        return true;
+        return !entity.getDateFin().isBefore(entity.getDateDebut());
     }
 }

@@ -39,7 +39,6 @@ public class ContratServiceImpl extends GenericServiceImpl<Contrat, Long> implem
     public boolean check(Contrat entity, boolean isNew) {
         if (entity == null) return false;
         if (entity.getDateSignature() == null) return false;
-        if (entity.getMontantTotal() == null) return false;
-        return true;
+        return entity.getMontantTotal() != null;
     }
 }

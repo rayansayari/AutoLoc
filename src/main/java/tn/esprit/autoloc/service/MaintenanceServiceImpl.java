@@ -41,6 +41,6 @@ public class MaintenanceServiceImpl extends GenericServiceImpl<Maintenance, Long
         if (entity == null) return false;
         if (Utils.isNotEmpty(entity.getDescription())) return false;
         if (entity.getCout() == null || entity.getCout() < 0) return false;
-        return true;
+        return entity.getCout() != null && entity.getCout() >= 0;
     }
 }

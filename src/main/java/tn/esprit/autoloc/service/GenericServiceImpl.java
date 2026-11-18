@@ -5,11 +5,11 @@ import tn.esprit.autoloc.exception.ResourceNotFoundException;
 
 import java.util.List;
 
-public abstract class GenericServiceImpl<T, ID> implements IGenericService<T, ID> {
+public abstract class GenericServiceImpl<T, K> implements IGenericService<T, K> {
 
-    protected abstract JpaRepository<T, ID> getRepository();
+    protected abstract JpaRepository<T, K> getRepository();
     protected abstract String getEntityName();
-    protected abstract ID getId(T entity);
+    protected abstract K getId(T entity);
     protected abstract void setFields(T source, T target);
 
     @Override
@@ -24,7 +24,7 @@ public abstract class GenericServiceImpl<T, ID> implements IGenericService<T, ID
     }
 
     @Override
-    public T findById(ID id) {
+    public T findById(K id) {
         return getRepository().findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(getEntityName(), String.valueOf(id)));
     }
@@ -35,7 +35,7 @@ public abstract class GenericServiceImpl<T, ID> implements IGenericService<T, ID
     }
 
     @Override
-    public T update(ID id, T entity) {
+    public T update(K id, T entity) {
         T existingEntity = findById(id);
         if (!check(entity, false)) {
             throw new IllegalArgumentException("Données invalides pour la mise à jour.");
@@ -45,7 +45,7 @@ public abstract class GenericServiceImpl<T, ID> implements IGenericService<T, ID
     }
 
     @Override
-    public void deleteById(ID id) {
+    public void deleteById(K id) {
         if (!getRepository().existsById(id)) {
             throw new ResourceNotFoundException(getEntityName(), String.valueOf(id));
         }

@@ -21,8 +21,7 @@ public class BasicAgenceServiceImpl implements IGenericService<Agence, Long> {
         if (Utils.isNotEmpty(agence.getNom())) return false;
         if (Utils.isNotEmpty(agence.getAdresse())) return false;
         if (Utils.isNotEmpty(agence.getTelephone())) return false;
-        if (Utils.isNotEmpty(agence.getVille())) return false;
-        return true;
+        return !Utils.isNotEmpty(agence.getVille());
     }
 
     @Override

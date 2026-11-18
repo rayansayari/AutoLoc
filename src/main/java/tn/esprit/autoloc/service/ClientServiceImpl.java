@@ -38,7 +38,6 @@ public class ClientServiceImpl extends GenericServiceImpl<Client, Long> implemen
     public boolean check(Client entity, boolean isNew) {
         if (entity == null) return false;
         if (Utils.isNotEmpty(entity.getNom())) return false;
-        if (Utils.isNotEmpty(entity.getPrenom())) return false;
-        return true;
+        return !Utils.isNotEmpty(entity.getPrenom());
     }
 }
