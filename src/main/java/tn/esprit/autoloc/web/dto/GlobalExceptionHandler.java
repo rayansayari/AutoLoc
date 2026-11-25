@@ -1,7 +1,8 @@
-
 package tn.esprit.autoloc.web.dto;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +14,8 @@ import java.time.ZoneId;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     // Fuseau horaire de la Tunisie
     private static final ZoneId ZONE = ZoneId.of("Africa/Tunis");
@@ -54,7 +57,7 @@ public class GlobalExceptionHandler {
             Exception ex,
             HttpServletRequest request) {
 
-        ex.printStackTrace();
+        LOGGER.error("Erreur inattendue sur {}", request.getRequestURI(), ex);
 
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(ZONE),

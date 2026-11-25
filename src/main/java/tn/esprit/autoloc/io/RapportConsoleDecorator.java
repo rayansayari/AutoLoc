@@ -1,8 +1,12 @@
 package tn.esprit.autoloc.io;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tn.esprit.autoloc.domain.Agence;
 
 public class RapportConsoleDecorator implements Rapport {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RapportConsoleDecorator.class);
 
     private final Rapport rapport;
 
@@ -17,7 +21,9 @@ public class RapportConsoleDecorator implements Rapport {
 
     @Override
     public String generer(Agence agence, double total) {
-        System.out.println(rapport.entete(agence));   // en-tête affiché sur la console
-        return rapport.generer(agence, total);        // le total est retourné
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("{}", rapport.entete(agence));   // en-tête écrit dans les logs
+        }
+        return rapport.generer(agence, total);           // le total est retourné
     }
 }

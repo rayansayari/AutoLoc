@@ -1,5 +1,6 @@
 package tn.esprit.autoloc.web.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +8,9 @@ import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.service.IAgenceService;
 import tn.esprit.autoloc.service.IAgenceSimulationService;
+import tn.esprit.autoloc.web.dto.AgenceAvecEmployesDto;
+import tn.esprit.autoloc.web.dto.AgenceDto;
+import tn.esprit.autoloc.web.dto.AgenceMapper;
 
 import java.util.List;
 
@@ -17,26 +21,29 @@ public class AgenceController {
 
     private final IAgenceService agenceService;
     private final IAgenceSimulationService simulationService;
+    private final AgenceMapper agenceMapper;
 
     @GetMapping
-    public List<Agence> findAll() {
-        return agenceService.findAll();
+    public List<AgenceDto> findAll() {
+        return agenceMapper.toDtoList(agenceService.findAll());
     }
 
     @GetMapping("/{id}")
-    public Agence findById(@PathVariable Long id) {
-        return agenceService.findById(id);
+    public AgenceDto findById(@PathVariable Long id) {
+        return agenceMapper.toDto(agenceService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Agence create(@RequestBody Agence agence) {
-        return agenceService.create(agence);
+    public AgenceDto create(@Valid @RequestBody AgenceDto dto) {
+        Agence agence = agenceService.create(agenceMapper.toEntity(dto));
+        return agenceMapper.toDto(agence);
     }
 
     @PutMapping("/{id}")
-    public Agence update(@PathVariable Long id, @RequestBody Agence agence) {
-        return agenceService.update(id, agence);
+    public AgenceDto update(@PathVariable Long id, @Valid @RequestBody AgenceDto dto) {
+        Agence agence = agenceService.update(id, agenceMapper.toEntity(dto));
+        return agenceMapper.toDto(agence);
     }
 
     @DeleteMapping("/{id}")
@@ -53,9 +60,11 @@ public class AgenceController {
         return simulationService.simuler(agence, jours, offre);
     }
 
-    // Étape 12 : mise à jour d'une agence avec ajout d'employés
+    // Mise à jour d'une agence avec ajout d'employés
     @PutMapping("/{id}/employes")
-    public Agence ajouterEmployes(@PathVariable Long id, @RequestBody Agence agence) {
-        return agenceService.ajouterEmployes(id, agence);
+    public AgenceAvecEmployesDto ajouterEmployes(@PathVariable Long id,
+                                                 @Valid @RequestBody AgenceAvecEmployesDto dto) {
+        Agence agence = agenceService.ajouterEmployes(id, agenceMapper.toEntity(dto));
+        return agenceMapper.toAvecEmployesDto(agence);
     }
 }

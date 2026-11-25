@@ -3,8 +3,9 @@ package tn.esprit.autoloc.web.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Equipement;
 import tn.esprit.autoloc.service.IEquipementService;
+import tn.esprit.autoloc.web.dto.EquipementDto;
+import tn.esprit.autoloc.web.dto.EquipementMapper;
 
 import java.util.List;
 
@@ -14,17 +15,19 @@ import java.util.List;
 public class EquipementController {
 
     private final IEquipementService equipementService;
+    private final EquipementMapper equipementMapper;
 
     @GetMapping
-    public List<Equipement> findAll() {
-        return equipementService.findAll();
+    public List<EquipementDto> findAll() {
+        return equipementMapper.toDtoList(equipementService.findAll());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Equipement create(@RequestBody Equipement equipement) {
-        return equipementService.create(equipement);
+    public EquipementDto create(@RequestBody EquipementDto dto) {
+        return equipementMapper.toDto(equipementService.create(equipementMapper.toEntity(dto)));
     }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
