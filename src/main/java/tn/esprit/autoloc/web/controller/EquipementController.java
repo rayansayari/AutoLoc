@@ -1,5 +1,6 @@
 package tn.esprit.autoloc.web.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class EquipementController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EquipementDto create(@RequestBody EquipementDto dto) {
+    public EquipementDto create(@Valid @RequestBody EquipementDto dto) {
         return equipementMapper.toDto(equipementService.create(equipementMapper.toEntity(dto)));
     }
 

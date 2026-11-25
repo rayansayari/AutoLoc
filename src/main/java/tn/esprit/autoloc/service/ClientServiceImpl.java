@@ -32,6 +32,10 @@ public class ClientServiceImpl extends GenericServiceImpl<Client, Long> implemen
     protected void setFields(Client source, Client target) {
         target.setNom(source.getNom());
         target.setPrenom(source.getPrenom());
+        target.setEmail(source.getEmail());
+        target.setTelephone(source.getTelephone());
+        target.setNumPermis(source.getNumPermis());
+        target.setDateInscription(source.getDateInscription());
     }
 
     @Override
